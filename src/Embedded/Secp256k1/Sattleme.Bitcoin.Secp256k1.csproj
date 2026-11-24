@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    NBitcoin.Secp256k1 4.0.4, the SDK's secp256k1 (vendor/NBitcoin.Secp256k1, MIT, its LICENSE
+    there), compiled as its own project compiles it (NBitcoin.Secp256k1.csproj: its sources, C# 12,
+    unsafe code, SECP256K1_LIB and HAS_SPAN), under the module's names: Embedded.targets.
+  -->
+
+  <PropertyGroup>
+    <AssemblyName>Sattleme.Bitcoin.Secp256k1</AssemblyName>
+    <LangVersion>12.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>$(DefineConstants);SECP256K1_LIB;HAS_SPAN</DefineConstants>
+    <!-- As its project: its documentation comments and CLS attributes are not checked. -->
+    <NoWarn>$(NoWarn);1591;1573;1572;1584;1570;3021</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedSource Include="$(RepositoryRoot)vendor/NBitcoin.Secp256k1/NBitcoin/Secp256k1/**/*.cs;$(RepositoryRoot)vendor/NBitcoin.Secp256k1/NBitcoin/NullableShims.cs"
+                    Root="$(RepositoryRoot)vendor/NBitcoin.Secp256k1/" />
+  </ItemGroup>
+
+  <!-- After the sources: Embedded.targets lists the prefixed copies it compiles. -->
+  <Import Project="../Embedded.targets" />
+
+</Project>

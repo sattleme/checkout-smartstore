@@ -1,0 +1,138 @@
+@model PaymentPageModel
+@{
+    Layout = "_Layout";
+    Assets.AppendTitleParts(T("Plugins.Sattleme.Bitcoin.Pay.Title", Model.OrderNumber).ToString());
+    Assets.AddMetaRobots(content: "noindex, nofollow");
+    Assets.AppendCssFiles(SattlemeDefaults.Content + "pay.css");
+    Assets.AppendScriptFiles(SattlemeDefaults.Content + "pay.js");
+    var underpaid = Model.Phase == "underpaid";
+}
+<div class="page sattleme-pay"
+     id="sattleme-pay"
+     data-status-url="@Model.StatusUrl"
+     data-version="@Model.Version"
+     data-poll="@Model.PollSeconds"
+     data-seconds-left="@Model.SecondsLeft"
+     data-copied="@T("Plugins.Sattleme.Bitcoin.Pay.Copied")">
+    <div class="page-title">
+        <h1 class="h3">@T("Plugins.Sattleme.Bitcoin.Pay.Title", Model.OrderNumber)</h1>
+    </div>
+    <div class="page-body">
+        @switch (Model.Phase)
+        {
+            case "open":
+            case "underpaid":
+                @if (underpaid)
+                {
+                    <p class="sattleme-pay-notice">@T("Plugins.Sattleme.Bitcoin.Pay.Underpaid", Model.ReceivedSats, Model.Sats)</p>
+                }
+                <div class="sattleme-pay-amount">
+                    <span class="sattleme-pay-label">@T(underpaid ? "Plugins.Sattleme.Bitcoin.Pay.RemainingAmount" : "Plugins.Sattleme.Bitcoin.Pay.Amount")</span>
+                    <strong class="sattleme-pay-sats">@Model.ToPaySats sats</strong>
+                    <span class="sattleme-pay-btc">@Model.ToPayBtc BTC</span>
+                    @if (!underpaid && Model.Price is not null)
+                    {
+                        <span class="sattleme-pay-price">@T("Plugins.Sattleme.Bitcoin.Pay.OrderTotal", Model.Price)</span>
+                    }
+                </div>
+                @if (Model.Uri is null)
+                {
+                    <p class="sattleme-pay-notice">@T("Plugins.Sattleme.Bitcoin.Pay.RestPreparing")</p>
+                }
+                else
+                {
+                    <div class="sattleme-pay-code">
+                        @if (Model.QrSvg is not null)
+                        {
+                            <a class="sattleme-pay-qr" href="@Model.Uri" title="@T("Plugins.Sattleme.Bitcoin.Pay.OpenWallet")">@Html.Raw(Model.QrSvg)</a>
+                        }
+                        <p class="sattleme-pay-scan">@T("Plugins.Sattleme.Bitcoin.Pay.Scan")</p>
+                        <a class="btn btn-primary sattleme-pay-open" href="@Model.Uri">@T("Plugins.Sattleme.Bitcoin.Pay.OpenWallet")</a>
+                    </div>
+                    <div class="sattleme-pay-time">
+                        <span class="sattleme-pay-label">@T("Plugins.Sattleme.Bitcoin.Pay.TimeLeft")</span>
+                        <strong data-countdown>@Model.TimeLeft</strong>
+                        <span>@T("Plugins.Sattleme.Bitcoin.Pay.Until", Model.Until ?? "")</span>
+                    </div>
+                    @if (Model.Lightning is not null)
+                    {
+                        <div class="sattleme-pay-copy">
+                            <label for="sattleme-lightning">@T("Plugins.Sattleme.Bitcoin.Pay.LightningInvoice")</label>
+                            <textarea id="sattleme-lightning" class="form-control" readonly rows="3" spellcheck="false">@Model.Lightning</textarea>
+                            <button type="button" class="btn btn-secondary btn-sm" data-copy="sattleme-lightning" hidden>@T("Plugins.Sattleme.Bitcoin.Pay.CopyLightning")</button>
+                        </div>
+                    }
+                    @if (Model.Address is not null)
+                    {
+                        <div class="sattleme-pay-copy">
+                            <label for="sattleme-address">@T("Plugins.Sattleme.Bitcoin.Pay.Address")</label>
+                            <input id="sattleme-address" class="form-control" type="text" readonly spellcheck="false" value="@Model.Address" />
+                            <button type="button" class="btn btn-secondary btn-sm" data-copy="sattleme-address" hidden>@T("Plugins.Sattleme.Bitcoin.Pay.CopyAddress")</button>
+                            <p class="sattleme-pay-hint">@T("Plugins.Sattleme.Bitcoin.Pay.SendExactly", Model.ToPayBtc)</p>
+                        </div>
+                    }
+                    @if (Model.HasOnchain)
+                    {
+                        <p class="sattleme-pay-hint">@T("Plugins.Sattleme.Bitcoin.Pay.OnchainNote")</p>
+                    }
+                }
+                break;
+            case "ended":
+                <p class="sattleme-pay-notice">@T("Plugins.Sattleme.Bitcoin.Pay.Ended")</p>
+                <p>@T("Plugins.Sattleme.Bitcoin.Pay.EndedChecking")</p>
+                break;
+            case "unconfirmed":
+                <p class="sattleme-pay-notice">@T("Plugins.Sattleme.Bitcoin.Pay.Unconfirmed", Model.ReceivedSats)</p>
+                <p>@T("Plugins.Sattleme.Bitcoin.Pay.Confirmations", Model.Confirmations)</p>
+                <p>@T("Plugins.Sattleme.Bitcoin.Pay.CanClose")</p>
+                break;
+            case "arrived":
+                <p class="sattleme-pay-notice">@T("Plugins.Sattleme.Bitcoin.Pay.Arrived")</p>
+                <p>@T("Plugins.Sattleme.Bitcoin.Pay.CanClose")</p>
+                break;
+            case "review":
+                <p class="sattleme-pay-notice">@T("Plugins.Sattleme.Bitcoin.Pay.Review")</p>
+                break;
+            case "paid":
+                <p class="sattleme-pay-notice sattleme-pay-done">@T("Plugins.Sattleme.Bitcoin.Pay.Paid")</p>
+                break;
+            case "expired":
+                @if (Model.HasReceived)
+                {
+                    <p class="sattleme-pay-notice">@T("Plugins.Sattleme.Bitcoin.Pay.ExpiredUnderpaid", Model.ReceivedSats, Model.Sats)</p>
+                }
+                else
+                {
+                    <p class="sattleme-pay-notice">@T("Plugins.Sattleme.Bitcoin.Pay.Expired")</p>
+                }
+                break;
+            case "cancelled":
+                <p class="sattleme-pay-notice">@T("Plugins.Sattleme.Bitcoin.Pay.Cancelled")</p>
+                break;
+            default:
+                <p class="sattleme-pay-notice">@T("Plugins.Sattleme.Bitcoin.Pay.None")</p>
+                @if (Model.Problem is not null)
+                {
+                    <p>@Model.Problem</p>
+                }
+                break;
+        }
+
+        @if (Model.CanMakeNew)
+        {
+            <form method="post" action="@Model.NewInvoiceUrl" asp-antiforgery="true" class="sattleme-pay-new">
+                <button type="submit" class="btn btn-primary">@T(Model.Phase == "expired" ? "Plugins.Sattleme.Bitcoin.Pay.NewInvoice" : "Plugins.Sattleme.Bitcoin.Pay.GetInvoice")</button>
+            </form>
+        }
+
+        @if (Model.PollSeconds is not null)
+        {
+            <p class="sattleme-pay-updates" hidden>@T("Plugins.Sattleme.Bitcoin.Pay.Updates")</p>
+            <noscript>
+                <p><a class="btn btn-secondary" href="@Model.CheckUrl" rel="nofollow">@T("Plugins.Sattleme.Bitcoin.Pay.Check")</a></p>
+            </noscript>
+        }
+
+        <p class="sattleme-pay-back"><a href="@Model.OrderUrl" rel="nofollow">@T("Plugins.Sattleme.Bitcoin.Pay.BackToOrder")</a></p>
+    </div>
+</div>

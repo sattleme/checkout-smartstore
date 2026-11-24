@@ -1,0 +1,19 @@
+<Project>
+  <!--
+    The packages of this repository's own projects, one exact version each (README.md,
+    "Dependencies"); the lockfiles (packages.lock.json) pin what they bring, and CI restores them in
+    locked mode. The module itself references no package: Smartstore brings its framework, and the
+    SDK, NBitcoin.Secp256k1 and the QR code generator are compiled from their pinned sources.
+  -->
+  <ItemGroup Label="The tests: NUnit and Moq, as Smartstore's own tests, at their latest versions">
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.12.0" />
+    <PackageVersion Include="NUnit" Version="5.0.0" />
+    <PackageVersion Include="NUnit3TestAdapter" Version="6.3.1" />
+    <PackageVersion Include="Moq" Version="4.21.0" />
+    <!--
+      Smartstore 6.4.0's own version (src/Smartstore/Smartstore.csproj), as the shop runs it: the
+      test host would bring 8.0.2. Updated by hand with Smartstore (.github/dependabot.yml ignores it).
+    -->
+    <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="10.0.8" />
+  </ItemGroup>
+</Project>

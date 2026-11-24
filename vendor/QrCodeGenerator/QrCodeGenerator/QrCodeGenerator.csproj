@@ -1,0 +1,83 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
+    <IsTrimmable Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net6.0'))">true</IsTrimmable>
+    <LangVersion>7.3</LangVersion>
+    <RootNamespace>Net.Codecrete.QrCodeGenerator</RootNamespace>
+    <PackageId>Net.Codecrete.QrCodeGenerator</PackageId>
+    <Version>3.2.1</Version>
+    <PackageVersion>3.2.1</PackageVersion>
+    <FileVersion>3.2.1.0</FileVersion>
+    <Authors>Manuel Bleichenbacher</Authors>
+    <Product>QR Code Generator for .NET</Product>
+    <Description>QR Code Generator for .NET – simple, compact and with many examples.
+
+Core features:
+- Supports encoding all 40 versions (sizes) and all 4 error correction levels, as per the QR Code Model 2 standard
+- Output formats: List of rectangles, outline polygons, raw modules/pixels of the QR symbol, SVG, XAML path, PNG and BMP files. For other raster bitmap formats, see project home page.
+- Computes optimal segment modes for smallest possible QR code.
+- High speed: 10x faster than most comparable libraries
+- Open source code under the permissive *MIT License*
+- Built for .NET Standard 2.0 and therefore runs on most modern .NET platforms (.NET Core, .NET Framework, Mono etc.).
+- Example code for WinForms, WPF, ASP.NET, ImageSharp, SkiaSharp and many more
+
+Advanced features:
+- Specify minimum and maximum version number allowed
+- Specify text encoding and use of ECI designators
+- Kanji mode for compact encoding of Japanese text
+- Create data segments manually
+- Split long text into multiple linked QR codes (aka Structured Append)
+- Opt-in encoding diagnostics: per-mask penalty breakdown and chosen segments
+</Description>
+    <Copyright>Copyright (c) Manuel Bleichenbacher (MIT License)</Copyright>
+    <RepositoryUrl>https://github.com/manuelbl/QrCodeGenerator</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/manuelbl/QrCodeGenerator</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>logo.png</PackageIcon>
+    <PackageTags>qr code, qrcode, kanji, qrcode generator, svg</PackageTags>
+    <PackageReleaseNotes>New in releases 3.2:
+- Further improved performance and memory usage
+- Smallest QR code for any text input
+- Smaller SVG output, smaller SVG/XAML graphics path
+</PackageReleaseNotes>
+    <Company>Codecrete</Company>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
+    <AssemblyVersion>3.2.1.0</AssemblyVersion>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <EnablePackageValidation>true</EnablePackageValidation>
+    <PackageValidationBaselineVersion>3.0.0</PackageValidationBaselineVersion>
+    <Deterministic>True</Deterministic>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Restoring">
+    <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Packaging">
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <DebugType>embedded</DebugType>
+    <EmbedAllSources>true</EmbedAllSources>
+    <ContinuousIntegrationBuild Condition="$(Configuration) == 'Release'">true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+	
+  <ItemGroup>
+    <None Include="docs\logo.png" Pack="true" PackagePath="\" />
+    <None Include="docs\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.300" PrivateAssets="All" />
+    <!-- Build-time-only transitive dependency of SourceLink. Pin it and drop its build assets
+         so its .targets (which warns about net6.0 not being a supported TFM) isn't imported. -->
+    <PackageReference Include="System.IO.Hashing" Version="10.0.8" PrivateAssets="All" ExcludeAssets="build;buildTransitive" />
+  </ItemGroup>
+
+  <Target Name="ValidateNuGetPackage" AfterTargets="Pack">
+    <Exec Command="dotnet tool restore" />
+    <Exec Command="dotnet validate package local $([MSBuild]::EnsureTrailingSlash($(PackageOutputPath)))$(PackageId).$(PackageVersion).nupkg" />
+  </Target>
+  
+</Project>

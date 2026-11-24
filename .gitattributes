@@ -1,0 +1,8 @@
+# Text files in LF everywhere.
+* text=auto eol=lf
+*.png binary
+
+# The pinned copies (the SDK, NBitcoin.Secp256k1, the QR code generator) are checked byte for byte
+# against their PIN.json: git never converts their line endings.
+sdk/** -text
+vendor/** -text

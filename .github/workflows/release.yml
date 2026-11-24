@@ -1,0 +1,120 @@
+name: Release
+
+# A maintainer pushes tag vX.Y.Z (= the module's version, on main): the checks run again, then the
+# module's archive is built at that commit, checked, and published as a GitHub release of this
+# repository, with its SHA256SUMS: the package a merchant uploads in Smartstore (Admin → Plugins →
+# Manage plugins → Upload package). Only the publishing job may write the repository's contents,
+# with this workflow's own GITHUB_TOKEN; no other secret. Never run from a development or agent
+# session.
+on:
+  push:
+    tags: ["v*.*.*"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  checks:
+    uses: ./.github/workflows/ci.yml
+
+  # Before the build, so that a wrong tag fails at once.
+  verify-tag:
+    name: Verify release tag
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Tag must match the module's version
+        run: |
+          version="$(sed -n 's:.*<Version>\(.*\)</Version>.*:\1:p' Directory.Build.props)"
+          manifest="$(python3 -I -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8-sig"))["Version"])' src/Sattleme.Bitcoin/module.json)"
+          if [ "$GITHUB_REF_NAME" != "v$version" ] || [ "$manifest" != "$version" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match the module's version (Directory.Build.props v$version, module.json $manifest)."
+            exit 1
+          fi
+          if ! grep -q -E "^## ${version//./\\.}( - [0-9]{4}-[0-9]{2}-[0-9]{2})?\$" CHANGELOG.md; then
+            echo "::error::CHANGELOG.md has no entry for $version."
+            exit 1
+          fi
+      - name: Tagged commit must be on main
+        run: |
+          if ! git merge-base --is-ancestor HEAD origin/main; then
+            echo "::error::$GITHUB_REF_NAME points to a commit that is not on main."
+            exit 1
+          fi
+
+  archive:
+    name: The archive, built and tested at the tag
+    needs: [checks, verify-tag]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      CI: "true"
+      DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+      DOTNET_NOLOGO: "1"
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: "1"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
+        with:
+          dotnet-version: 10.0.404
+      - name: Smartstore 6.4.0's assemblies
+        run: scripts/smartstore.sh
+      - name: The pinned copies (sdk/, vendor/)
+        run: dotnet run --project tools/Sattleme.Smartstore.Pins -c Release -- check
+      # From the lockfiles (locked mode, CI=true), at this very commit; the tests check the
+      # archive file by file, and the SDK's vectors against the assemblies it holds.
+      - name: Build, test, and the archive
+        run: |
+          dotnet restore Sattleme.Bitcoin.sln --locked-mode
+          dotnet build Sattleme.Bitcoin.sln -c Release --no-restore
+          dotnet test tests/Sattleme.Bitcoin.Tests -c Release --no-build
+      - name: The archive and its checksums
+        run: |
+          mkdir -p "$RUNNER_TEMP/release"
+          cp artifacts/Release/Smartstore.Module.Sattleme.Bitcoin."${GITHUB_REF_NAME#v}".zip "$RUNNER_TEMP/release/"
+          (cd "$RUNNER_TEMP/release" && sha256sum ./*.zip | sed 's: \./: :' > SHA256SUMS && cat SHA256SUMS)
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release
+          path: ${{ runner.temp }}/release/
+          if-no-files-found: error
+          retention-days: 90
+
+  publish:
+    name: GitHub release
+    needs: [archive]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    # The only job that writes: it creates the release, with this workflow's own token.
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: release
+          path: ${{ runner.temp }}/release
+      - name: Checksums, again
+        working-directory: ${{ runner.temp }}/release
+        run: sha256sum --check --strict SHA256SUMS
+      - name: Release ${{ github.ref_name }}
+        working-directory: ${{ runner.temp }}/release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          gh release create "$GITHUB_REF_NAME" \
+            "Smartstore.Module.Sattleme.Bitcoin.$version.zip" SHA256SUMS \
+            --verify-tag \
+            --title "sattle.me for Smartstore $version" \
+            --notes "Bitcoin payments for Smartstore 6.4, version $version: see CHANGELOG.md. Install: Admin → Plugins → Manage plugins → Upload package, then install the module; check the archive against SHA256SUMS."

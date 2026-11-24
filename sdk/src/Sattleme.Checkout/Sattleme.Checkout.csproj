@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- net8.0 only: it loads as it is in hosts of .NET 8, 9, 10 and 11 (README.md, "Requirements"). -->
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>Sattleme.Checkout</RootNamespace>
+    <AssemblyName>Sattleme.Checkout</AssemblyName>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Package">
+    <PackageId>Sattleme.Checkout</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>sattle.me</Authors>
+    <Company>sattle.me</Company>
+    <Product>sattle.me checkout</Product>
+    <Copyright>Copyright (c) 2026 Swiss Bitcoin Pay Sàrl</Copyright>
+    <Description>Take Lightning and on-chain payments for a sattle.me merchant from an online shop's server: invoices, deposit addresses, registry declarations, payment checks.</Description>
+    <PackageTags>bitcoin;lightning;lnurl;nostr;payments;sattleme</PackageTags>
+    <PackageProjectUrl>https://github.com/sattleme/checkout-dotnet#readme</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/sattleme/checkout-dotnet</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NBitcoin.Secp256k1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Sattleme.Checkout.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/" Visible="false" />
+    <None Include="../../LICENSE" Pack="true" PackagePath="/" Visible="false" />
+    <None Include="../../CHANGELOG.md" Pack="true" PackagePath="/" Visible="false" />
+  </ItemGroup>
+
+</Project>

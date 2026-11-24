@@ -1,0 +1,52 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    A module for the end-to-end test only (e2e/run.sh), never shipped: installed beside the
+    sattle.me module in a test shop, it replaces the module's one way to the SDK (ISattlemeGateway)
+    with a fake whose payments the test makes. The shipped module has no switch for it: only
+    installing this other module does it. It references the sattle.me module's assemblies, which
+    the shop loads from that module's folder (module.json: DependsOn).
+  -->
+  <PropertyGroup>
+    <AssemblyName>Sattleme.E2e</AssemblyName>
+    <RootNamespace>Sattleme.E2e</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
+    <GenerateDependencyFile>false</GenerateDependencyFile>
+    <PreserveCompilationContext>false</PreserveCompilationContext>
+    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <SmartstoreReference Include="Smartstore;Smartstore.Core;Smartstore.Web.Common;Autofac" />
+    <Reference Include="@(SmartstoreReference)" HintPath="$(SmartstoreDir)%(Identity).dll" Private="false" />
+    <ProjectReference Include="../../src/Sattleme.Bitcoin/Sattleme.Bitcoin.csproj" Private="false" />
+    <ProjectReference Include="../../src/Embedded/Checkout/Sattleme.Bitcoin.Sdk.csproj" Private="false" />
+  </ItemGroup>
+
+  <!-- Its package, as the payment module's: artifacts/<configuration>/Smartstore.Module.Sattleme.E2e.1.0.0.zip. -->
+  <Target Name="PackageE2eModule" AfterTargets="Build" Condition="'$(DesignTimeBuild)' != 'true'">
+    <PropertyGroup>
+      <E2eStage>$(RepositoryRoot)artifacts/$(Configuration)/e2e-stage/</E2eStage>
+    </PropertyGroup>
+    <ItemGroup>
+      <E2eManifestLine Include="{" />
+      <E2eManifestLine Include="  &quot;ExtensionType&quot;: &quot;Module&quot;," />
+      <E2eManifestLine Include="  &quot;Name&quot;: &quot;Sattleme.E2e&quot;," />
+      <E2eManifestLine Include="  &quot;FriendlyName&quot;: &quot;sattle.me end-to-end test (never in a shop)&quot;," />
+      <E2eManifestLine Include="  &quot;Group&quot;: &quot;Developer&quot;," />
+      <E2eManifestLine Include="  &quot;Version&quot;: &quot;1.0.0&quot;," />
+      <E2eManifestLine Include="  &quot;MinAppVersion&quot;: &quot;6.4.0&quot;" />
+      <E2eManifestLine Include="}" />
+    </ItemGroup>
+    <RemoveDir Directories="$(E2eStage)" />
+    <Copy SourceFiles="$(OutDir)Sattleme.E2e.dll;module.json" DestinationFolder="$(E2eStage)Modules/Sattleme.E2e/" />
+    <WriteLinesToFile File="$(E2eStage)manifest.json" Lines="@(E2eManifestLine)" Overwrite="true" />
+    <ZipDirectory SourceDirectory="$(E2eStage)" DestinationFile="$(RepositoryRoot)artifacts/$(Configuration)/Smartstore.Module.Sattleme.E2e.1.0.0.zip" Overwrite="true" />
+  </Target>
+
+</Project>

@@ -1,0 +1,108 @@
+<Project>
+  <!--
+    A pinned copy (sdk/, vendor/) compiled under the module's own names (README.md, "The SDK in the
+    module"): its sources stay unchanged on disk; the build copies them into obj/ with the lines
+    that declare or import one of the embedded namespaces prefixed (`namespace Sattleme.Checkout…`
+    becomes `namespace SmartstoreSattleme.Sattleme.Checkout…`, and so do `using NBitcoin.Secp256k1…`
+    and the QR code generator's), then compiles those copies.
+
+    The prefix is one identifier that the embedded code never uses as a name. A name used inside a
+    namespace resolves, by C#'s rules, from that namespace outwards, then through the usings: the
+    only level the prefix adds, SmartstoreSattleme, holds just the prefixed roots (Sattleme,
+    NBitcoin, Net), which stand where the original roots stood, so every name resolves as it does in
+    the original build. (A prefix of several parts would add levels of its own: inside
+    Sattleme.Bitcoin.…, the SDK's own types would compete with the namespace Sattleme.Bitcoin.) A
+    name that would still lead to an original namespace fails to compile, since no assembly of the
+    build defines one; the tests check that the built assemblies hold no type outside the prefix and
+    reference no assembly of the original names.
+  -->
+  <PropertyGroup>
+    <EmbeddedNamespacePrefix>SmartstoreSattleme</EmbeddedNamespacePrefix>
+    <EmbeddedNamespaces>Sattleme.Checkout;NBitcoin.Secp256k1;Net.Codecrete.QrCodeGenerator</EmbeddedNamespaces>
+    <!--
+      obj/embedded/, whatever the configuration: the copies are the same in all, and the list of
+      them is known when the project is evaluated (below), so that a design-time build (an IDE's,
+      dotnet format's) sees them too.
+    -->
+    <EmbeddedSourceDir>$(BaseIntermediateOutputPath)embedded/</EmbeddedSourceDir>
+    <RootNamespace>$(EmbeddedNamespacePrefix)</RootNamespace>
+    <!-- Only the prefixed copies are compiled; their own usings, never implicit ones. -->
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <!-- Third-party code, compiled as its authors compile it: not checked by this repository's style. -->
+    <RunAnalyzers>false</RunAnalyzers>
+    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- The module's tests run the SDK's own cryptography vectors against these very assemblies. -->
+    <InternalsVisibleTo Include="Sattleme.Bitcoin.Tests" />
+  </ItemGroup>
+
+  <UsingTask TaskName="PrefixEmbeddedNamespaces"
+             TaskFactory="RoslynCodeTaskFactory"
+             AssemblyFile="$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <Sources ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+      <Targets ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+      <Prefix ParameterType="System.String" Required="true" />
+      <Namespaces ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System" />
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.Linq" />
+      <Using Namespace="System.Text" />
+      <Using Namespace="System.Text.RegularExpressions" />
+      <Code Type="Fragment" Language="cs"><![CDATA[
+        // A line that declares or imports a namespace: `namespace N`, `using N;`, `using static N.T;`,
+        // `using A = N.T;` (or `global using …`), where N is an embedded namespace or one inside it.
+        var names = string.Join("|", Namespaces.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries).Select(Regex.Escape));
+        var directive = new Regex(
+            @"^(?<lead>[ \t]*(?:global[ \t]+)?(?:namespace|using(?:[ \t]+static)?(?:[ \t]+@?[A-Za-z_][A-Za-z0-9_]*[ \t]*=)?)[ \t]+)(?<name>(?:" + names + @"))(?=[ \t]*[.;{\r\n]|[ \t]*$)",
+            RegexOptions.Multiline | RegexOptions.CultureInvariant);
+        for (var i = 0; i < Sources.Length; i++)
+        {
+            var bytes = File.ReadAllBytes(Sources[i].ItemSpec);
+            var bom = bytes.Length >= 3 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF;
+            var text = new UTF8Encoding(false, true).GetString(bytes, bom ? 3 : 0, bytes.Length - (bom ? 3 : 0));
+            var prefixed = directive.Replace(text, match => match.Groups["lead"].Value + Prefix + "." + match.Groups["name"].Value);
+            var output = new UTF8Encoding(bom).GetPreamble().Concat(new UTF8Encoding(false).GetBytes(prefixed)).ToArray();
+            var target = Targets[i].ItemSpec;
+            Directory.CreateDirectory(Path.GetDirectoryName(target));
+            if (!File.Exists(target) || !File.ReadAllBytes(target).SequenceEqual(output))
+                File.WriteAllBytes(target, output);
+        }
+        ]]></Code>
+    </Task>
+  </UsingTask>
+
+  <!--
+    Each source's copy keeps its path below the copy's root (EmbeddedSource's Root metadata). The
+    copies are what the compiler gets; the target below writes them before it runs.
+  -->
+  <ItemGroup>
+    <_EmbeddedSourceWithTarget Include="@(EmbeddedSource)">
+      <PrefixedPath>$(EmbeddedSourceDir)$([MSBuild]::MakeRelative('%(Root)', '%(FullPath)'))</PrefixedPath>
+    </_EmbeddedSourceWithTarget>
+    <_EmbeddedTarget Include="@(_EmbeddedSourceWithTarget->'%(PrefixedPath)')" />
+    <Compile Include="@(_EmbeddedTarget)" Visible="false" />
+  </ItemGroup>
+
+  <!--
+    Before the build, and before the compiler of a design-time build (an IDE's, dotnet format's),
+    which runs no BeforeBuild. Skipped when no source (nor this file) changed since the copies were
+    made.
+  -->
+  <Target Name="PrefixEmbeddedSources"
+          BeforeTargets="BeforeBuild;CoreCompile"
+          Inputs="@(EmbeddedSource);$(MSBuildThisFileFullPath)"
+          Outputs="@(_EmbeddedTarget)">
+    <PrefixEmbeddedNamespaces Sources="@(_EmbeddedSourceWithTarget)"
+                              Targets="@(_EmbeddedTarget)"
+                              Prefix="$(EmbeddedNamespacePrefix)"
+                              Namespaces="$(EmbeddedNamespaces)" />
+  </Target>
+</Project>

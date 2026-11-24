@@ -1,0 +1,8 @@
+@model OrderPaymentModel
+<div class="card card-body mb-3 sattleme-order-payment">
+    <p class="mb-2"><strong>@T("Plugins.Sattleme.Bitcoin.Order.Title")</strong> @T("Plugins.Sattleme.Bitcoin." + Model.Text, Model.TextArguments)</p>
+    @if (Model.OffersPayment)
+    {
+        <p class="mb-0"><a class="btn btn-primary btn-sm" href="@Model.PayUrl" rel="nofollow">@T("Plugins.Sattleme.Bitcoin.Order.Pay")</a></p>
+    }
+</div>

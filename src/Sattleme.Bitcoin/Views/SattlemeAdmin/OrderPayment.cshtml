@@ -1,0 +1,121 @@
+@model AdminOrderPaymentModel
+@{
+    Layout = null;
+}
+<div class="sattleme-admin-order">
+    @if (Model.Warning is not null)
+    {
+        <div class="alert alert-warning">@Model.Warning</div>
+    }
+    @if (Model.Invoices.Count == 0)
+    {
+        <p>@T("Plugins.Sattleme.Bitcoin.Admin.NoInvoice")</p>
+    }
+    @foreach (var invoice in Model.Invoices)
+    {
+        <table class="table table-sm sattleme-admin-invoice">
+            <tbody>
+                <tr><th>@T("Plugins.Sattleme.Bitcoin.Admin.Reference")</th><td><code>@invoice.Reference</code></td></tr>
+                <tr><th>@T("Plugins.Sattleme.Bitcoin.Admin.State")</th><td>@invoice.State</td></tr>
+                <tr><th>@T("Plugins.Sattleme.Bitcoin.Admin.Amount")</th><td>@invoice.Amount</td></tr>
+                @if (invoice.Rate is not null)
+                {
+                    <tr><th>@T("Plugins.Sattleme.Bitcoin.Admin.Rate")</th><td>@invoice.Rate</td></tr>
+                }
+                @if (invoice.Note is not null)
+                {
+                    <tr><th>@T("Plugins.Sattleme.Bitcoin.Admin.Note")</th><td>@invoice.Note</td></tr>
+                }
+                @if (invoice.Received is not null)
+                {
+                    <tr><th>@T("Plugins.Sattleme.Bitcoin.Admin.Received")</th><td>@invoice.Received</td></tr>
+                }
+                @if (invoice.Confirmations is not null)
+                {
+                    <tr><th>@T("Plugins.Sattleme.Bitcoin.Admin.Confirmations")</th><td>@invoice.Confirmations</td></tr>
+                }
+                @if (invoice.Address is not null)
+                {
+                    <tr>
+                        <th>@T("Plugins.Sattleme.Bitcoin.Admin.Address")</th>
+                        <td>
+                            @if (invoice.AddressLink)
+                            {
+                                <a href="https://mempool.space/address/@invoice.Address" target="_blank" rel="noopener noreferrer"><code>@invoice.Address</code></a>
+                            }
+                            else
+                            {
+                                <code>@invoice.Address</code>
+                            }
+                        </td>
+                    </tr>
+                }
+                @if (invoice.Txids.Count > 0)
+                {
+                    <tr>
+                        <th>@T("Plugins.Sattleme.Bitcoin.Admin.Transactions")</th>
+                        <td>
+                            @foreach (var txid in invoice.Txids)
+                            {
+                                <div><a href="https://mempool.space/tx/@txid" target="_blank" rel="noopener noreferrer"><code>@txid</code></a></div>
+                            }
+                        </td>
+                    </tr>
+                }
+                @if (invoice.TransactionsAtAddress)
+                {
+                    <tr>
+                        <th>@T("Plugins.Sattleme.Bitcoin.Admin.Transactions")</th>
+                        <td>
+                            @T("Plugins.Sattleme.Bitcoin.Admin.TransactionsAtAddress")
+                            <a href="https://mempool.space/address/@invoice.Address" target="_blank" rel="noopener noreferrer"><code>@invoice.Address</code></a>
+                        </td>
+                    </tr>
+                }
+                @if (invoice.Proofs.Count > 0)
+                {
+                    <tr>
+                        <th>@T("Plugins.Sattleme.Bitcoin.Admin.Preimage")</th>
+                        <td>
+                            @foreach (var proof in invoice.Proofs)
+                            {
+                                <div>
+                                    <code>@proof.Preimage</code>
+                                    @if (proof.PaymentHash is not null)
+                                    {
+                                        <br /><small>@T("Plugins.Sattleme.Bitcoin.Admin.PaymentHash") <code>@proof.PaymentHash</code></small>
+                                    }
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                }
+                <tr><th>@T("Plugins.Sattleme.Bitcoin.Admin.Created")</th><td>@invoice.Created</td></tr>
+                @if (invoice.Expires is not null)
+                {
+                    <tr><th>@T("Plugins.Sattleme.Bitcoin.Admin.Expires")</th><td>@invoice.Expires</td></tr>
+                }
+                @if (invoice.LastCheck is not null)
+                {
+                    <tr><th>@T("Plugins.Sattleme.Bitcoin.Admin.LastCheck")</th><td>@invoice.LastCheck</td></tr>
+                }
+                @if (invoice.NextCheck is not null)
+                {
+                    <tr><th>@T("Plugins.Sattleme.Bitcoin.Admin.NextCheck")</th><td>@invoice.NextCheck</td></tr>
+                }
+                @if (invoice.Error is not null)
+                {
+                    <tr><th>@T("Plugins.Sattleme.Bitcoin.Admin.Error")</th><td>@invoice.Error</td></tr>
+                }
+                @if (invoice.Shredded)
+                {
+                    <tr><th>@T("Plugins.Sattleme.Bitcoin.Admin.Privacy")</th><td>@T("Plugins.Sattleme.Bitcoin.Admin.Shredded")</td></tr>
+                }
+            </tbody>
+        </table>
+    }
+    @if (Model.Invoices.Count > 0)
+    {
+        <p class="text-muted">@T("Plugins.Sattleme.Bitcoin.Admin.Refunds")</p>
+    }
+</div>

@@ -1,0 +1,17 @@
+<Project>
+  <!--
+    Every package, one exact version (README.md, "Dependencies"); the lockfiles (packages.lock.json)
+    pin what they bring, and CI restores them in locked mode. Dependabot proposes the updates.
+  -->
+  <ItemGroup Label="The library">
+    <!-- secp256k1 (BIP-340 Schnorr, x-only keys, lift_x, ECDH): a C# port of libsecp256k1. -->
+    <PackageVersion Include="NBitcoin.Secp256k1" Version="4.0.4" />
+    <!-- ILogger: the lowest version the library's target (net8.0) takes; hosts bring their own. -->
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.3" />
+  </ItemGroup>
+  <ItemGroup Label="The tests">
+    <PackageVersion Include="xunit.v3" Version="4.0.3" />
+    <!-- Json.NET: what an application logs or returns may go through it; the key never does. -->
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
+  </ItemGroup>
+</Project>

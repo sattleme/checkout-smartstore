@@ -1,0 +1,54 @@
+# Pull requests that keep the actions, the tests' packages and the SDK up to date: one pull request
+# per ecosystem, grouping all its updates. Each waits a week after a release (cooldown): time for a
+# compromised release to be found and pulled before it reaches this repository.
+#
+# The pinned copies (sdk/, vendor/) are taken again with tools/Sattleme.Smartstore.Pins, never
+# here; Smartstore's version (scripts/smartstore.sh's archive, e2e/run.sh's image) by hand.
+version: 2
+updates:
+  # The SHA-pinned actions of .github/workflows/, in one pull request.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    groups:
+      actions:
+        patterns: ["*"]
+
+  # The tests' packages, pinned exactly in Directory.Packages.props, and the lockfiles, in one pull
+  # request. Their restore needs no Smartstore assembly (they are referenced by path at build
+  # time only): Dependabot's restore writes the lockfiles the CI's locked restore reads.
+  - package-ecosystem: nuget
+    directory: /
+    exclude-paths:
+      - "sdk/**"
+      - "vendor/**"
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    groups:
+      nuget:
+        patterns: ["*"]
+    ignore:
+      # Smartstore 6.4.0's own version, as the shop runs it (Directory.Packages.props): taken by
+      # hand with Smartstore's version (README.md, "Dependencies").
+      - dependency-name: Microsoft.Extensions.DependencyModel
+
+  # The SDK of global.json, in one pull request: .NET 10's, the framework of Smartstore 6.4, which
+  # the module targets and the tests run on. A later major comes with a Smartstore on its
+  # framework, by hand.
+  - package-ecosystem: dotnet-sdk
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    groups:
+      dotnet-sdk:
+        patterns: ["*"]
+    ignore:
+      - dependency-name: dotnet-sdk
+        update-types: ["version-update:semver-major"]

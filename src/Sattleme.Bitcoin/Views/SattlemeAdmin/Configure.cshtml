@@ -1,0 +1,82 @@
+@model ConfigurationModel
+@{
+    Layout = "_ConfigureProvider";
+}
+
+@await Component.InvokeAsync("StoreScope")
+
+<widget target-zone="admin_button_toolbar_before">
+    <button id="SaveConfigButton" type="submit" name="save" class="btn btn-warning" value="save">
+        <i class="fa fa-check"></i>
+        <span>@T("Admin.Common.Save")</span>
+    </button>
+</widget>
+
+<div class="plugin-configuration">
+    <div class="alert alert-info">
+        <p>@T("Plugins.Sattleme.Bitcoin.AdminInstruction")</p>
+        <p class="mb-0">@T("Plugins.Sattleme.Bitcoin.AdminActivation")</p>
+    </div>
+    <div>
+        <img src="@Url.Content(SattlemeDefaults.Content + "branding.png")" alt="sattle.me" width="160" />
+    </div>
+</div>
+
+@if (Model.CurrencyWarning is not null)
+{
+    <div class="alert alert-warning">@Model.CurrencyWarning</div>
+}
+
+<form asp-action="Configure" method="post" autocomplete="off">
+    <div asp-validation-summary="All"></div>
+    <div class="adminContent">
+        <div class="adminRow">
+            <div class="adminTitle">
+                <smart-label asp-for="IntegrationKey" />
+            </div>
+            <div class="adminData wide">
+                <p class="sattleme-key-status">@Model.KeyStatus</p>
+                <input asp-for="IntegrationKey" type="password" class="form-control" value="" autocomplete="new-password" spellcheck="false" />
+                <span asp-validation-for="IntegrationKey"></span>
+            </div>
+        </div>
+        @if (Model.HasKey)
+        {
+            <div class="adminRow">
+                <div class="adminTitle">
+                    <smart-label asp-for="RemoveKey" />
+                </div>
+                <div class="adminData">
+                    <input asp-for="RemoveKey" type="checkbox" class="form-check-input" />
+                </div>
+            </div>
+        }
+        <div class="adminRow">
+            <div class="adminTitle">
+                <smart-label asp-for="MinutesToPay" />
+            </div>
+            <div class="adminData">
+                <setting-editor asp-for="MinutesToPay"></setting-editor>
+                <span asp-validation-for="MinutesToPay"></span>
+            </div>
+        </div>
+        <div class="adminRow">
+            <div class="adminTitle">
+                <smart-label asp-for="AdditionalFee" />
+            </div>
+            <div class="adminData">
+                <setting-editor asp-for="AdditionalFee" sm-postfix="@Model.PrimaryCurrencyCode"></setting-editor>
+                <span asp-validation-for="AdditionalFee"></span>
+            </div>
+        </div>
+        <div class="adminRow">
+            <div class="adminTitle">
+                <smart-label asp-for="AdditionalFeePercentage" />
+            </div>
+            <div class="adminData">
+                <setting-editor asp-for="AdditionalFeePercentage"></setting-editor>
+                <span asp-validation-for="AdditionalFeePercentage"></span>
+            </div>
+        </div>
+    </div>
+</form>

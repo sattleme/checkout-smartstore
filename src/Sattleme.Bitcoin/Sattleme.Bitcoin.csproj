@@ -1,0 +1,149 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <!--
+    The module, built as Smartstore's documentation shows for a module ("Getting started with
+    modules", Smartstore.Build/Smartstore.Module.props at the tag 6.4.0): a Razor class library of
+    net10.0 whose views are compiled into its assembly, with Smartstore's application part factory,
+    referencing Smartstore's assemblies, here those of its release 6.4.0 ($(SmartstoreDir),
+    scripts/smartstore.sh). Smartstore's assemblies are not copied to the output (the host has them:
+    Private="false", as Smartstore.Module.props references its projects). The embedded SDK and its
+    dependencies are (src/Embedded).
+  -->
+  <PropertyGroup>
+    <AssemblyName>Sattleme.Bitcoin</AssemblyName>
+    <RootNamespace>Sattleme.Bitcoin</RootNamespace>
+    <OutputType>Library</OutputType>
+    <Description>Bitcoin payments, in Lightning or on-chain, straight to the merchant's sattle.me wallet.</Description>
+    <IsPackable>false</IsPackable>
+    <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
+    <!-- As Smartstore.Module.props and Smartstore.Razor.props. -->
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    <RazorCompileOnBuild>true</RazorCompileOnBuild>
+    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+    <GenerateProvideApplicationPartFactoryAttribute>true</GenerateProvideApplicationPartFactoryAttribute>
+    <ProvideApplicationPartFactoryAttributeTypeName>Smartstore.Engine.Modularity.ApplicationParts.ModuleRazorAssemblyPartFactory, Smartstore</ProvideApplicationPartFactoryAttributeTypeName>
+    <EnableDefaultContentItems>false</EnableDefaultContentItems>
+    <PreserveCompilationContext>false</PreserveCompilationContext>
+    <PreserveCompilationReferences>false</PreserveCompilationReferences>
+    <StaticWebAssetsEnabled>false</StaticWebAssetsEnabled>
+    <StaticWebAssetFingerprintingEnabled>false</StaticWebAssetFingerprintingEnabled>
+    <CompressionEnabled>false</CompressionEnabled>
+    <DisableBuildCompression>true</DisableBuildCompression>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <SmartstoreReference Include="Smartstore;Smartstore.Core;Smartstore.Web.Common;Smartstore.Web" />
+    <SmartstoreReference Include="Autofac;FluentMigrator;FluentMigrator.Abstractions" />
+    <SmartstoreReference Include="Microsoft.EntityFrameworkCore;Microsoft.EntityFrameworkCore.Abstractions;Microsoft.EntityFrameworkCore.Relational" />
+    <Reference Include="@(SmartstoreReference)" HintPath="$(SmartstoreDir)%(Identity).dll" Private="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Embedded/Secp256k1/Sattleme.Bitcoin.Secp256k1.csproj" />
+    <ProjectReference Include="../Embedded/Checkout/Sattleme.Bitcoin.Sdk.csproj" />
+    <ProjectReference Include="../Embedded/QrCode/Sattleme.Bitcoin.QrCode.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="module.json;Views/**/*.cshtml;Localization/*.xml;wwwroot/**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <!--
+    The module's archive, as Smartstore installs it (Admin → Configuration → Plugins → Upload
+    package: Smartstore.Core/Platform/Packaging, PackageInstaller): manifest.json (the module's
+    descriptor, as PackageBuilder writes it) and the module's folder at its place in the application,
+    Modules/Sattleme.Bitcoin/, named Smartstore.Module.{SystemName}.{Version}.zip as the Packager
+    names it. Only what the module needs goes in it, named one by one: its four assemblies (no
+    Sattleme.Checkout.dll nor NBitcoin.Secp256k1.dll: README.md, "The SDK in the module") and its
+    dependency file, its manifest, views, translations, script, style, images, and the licenses.
+    artifacts/<configuration>/stage/ is the archive's content, the zip is next to it; the tests
+    check both.
+  -->
+  <PropertyGroup>
+    <ModulePackageRoot>$(RepositoryRoot)artifacts/$(Configuration)/</ModulePackageRoot>
+    <ModulePackageStage>$(ModulePackageRoot)stage/</ModulePackageStage>
+    <ModulePackageDir>$(ModulePackageStage)Modules/Sattleme.Bitcoin/</ModulePackageDir>
+    <ModuleArchive>$(ModulePackageRoot)Smartstore.Module.Sattleme.Bitcoin.$(Version).zip</ModuleArchive>
+  </PropertyGroup>
+
+  <!--
+    The archive, reproducible: the same files give the same bytes on every build and machine. Its
+    entries in ordinal order of their paths, each dated 2026-01-01 00:00 (a zip's date is the file's,
+    which a build writes anew), no directory entry nor permission bits (MSBuild's ZipDirectory takes
+    the file system's order and dates).
+  -->
+  <UsingTask TaskName="SattlemeReproducibleZip" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <SourceDirectory ParameterType="System.String" Required="true" />
+      <DestinationFile ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System" />
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.IO.Compression" />
+      <Using Namespace="System.Linq" />
+      <Code Type="Fragment" Language="cs"><![CDATA[
+        // Compiled against netstandard2.0 (RoslynCodeTaskFactory): no Path.GetRelativePath.
+        var root = Path.GetFullPath(SourceDirectory).TrimEnd('/', '\\');
+        var files = Directory.GetFiles(root, "*", SearchOption.AllDirectories)
+            .Select(file => new { File = file, Name = file.Substring(root.Length + 1).Replace('\\', '/') })
+            .OrderBy(entry => entry.Name, StringComparer.Ordinal)
+            .ToList();
+        var date = new DateTimeOffset(2026, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        File.Delete(DestinationFile);
+        using (var zip = ZipFile.Open(DestinationFile, ZipArchiveMode.Create))
+        {
+            foreach (var file in files)
+            {
+                // CreateEntry, not CreateEntryFromFile: no file date nor permission bits.
+                var entry = zip.CreateEntry(file.Name, CompressionLevel.Optimal);
+                entry.LastWriteTime = date;
+                using (var source = File.OpenRead(file.File))
+                using (var target = entry.Open())
+                {
+                    source.CopyTo(target);
+                }
+            }
+        }
+]]></Code>
+    </Task>
+  </UsingTask>
+
+  <Target Name="PackageModule" AfterTargets="Build" Condition="'$(DesignTimeBuild)' != 'true'">
+    <ItemGroup>
+      <ModuleFile Include="$(OutDir)Sattleme.Bitcoin.dll;$(OutDir)Sattleme.Bitcoin.Sdk.dll;$(OutDir)Sattleme.Bitcoin.Secp256k1.dll;$(OutDir)Sattleme.Bitcoin.QrCode.dll;$(OutDir)Sattleme.Bitcoin.deps.json" />
+      <ModuleFile Include="module.json" />
+      <ModuleFolderFile Include="Views/**/*.cshtml;Localization/*.xml;wwwroot/**" />
+      <ModuleLicense Include="$(RepositoryRoot)LICENSE" PackageName="LICENSE" />
+      <ModuleLicense Include="$(RepositoryRoot)sdk/LICENSE" PackageName="Sattleme.Checkout.LICENSE" />
+      <ModuleLicense Include="$(RepositoryRoot)vendor/NBitcoin.Secp256k1/LICENSE" PackageName="NBitcoin.Secp256k1.LICENSE" />
+      <ModuleLicense Include="$(RepositoryRoot)vendor/QrCodeGenerator/LICENSE" PackageName="QrCodeGenerator.LICENSE" />
+      <ManifestLine Include="{" />
+      <ManifestLine Include="  &quot;ExtensionType&quot;: &quot;Module&quot;," />
+      <ManifestLine Include="  &quot;Name&quot;: &quot;Sattleme.Bitcoin&quot;," />
+      <ManifestLine Include="  &quot;FriendlyName&quot;: &quot;Bitcoin (sattle.me)&quot;," />
+      <ManifestLine Include="  &quot;Description&quot;: &quot;$(Description)&quot;," />
+      <ManifestLine Include="  &quot;Group&quot;: &quot;Payment&quot;," />
+      <ManifestLine Include="  &quot;Author&quot;: &quot;$(Authors)&quot;," />
+      <ManifestLine Include="  &quot;ProjectUrl&quot;: &quot;https://sattle.me&quot;," />
+      <ManifestLine Include="  &quot;Version&quot;: &quot;$(Version)&quot;," />
+      <ManifestLine Include="  &quot;MinAppVersion&quot;: &quot;6.4.0&quot;" />
+      <ManifestLine Include="}" />
+    </ItemGroup>
+    <RemoveDir Directories="$(ModulePackageStage)" />
+    <Delete Files="$(ModuleArchive)" />
+    <Copy SourceFiles="@(ModuleFile)" DestinationFolder="$(ModulePackageDir)" />
+    <Copy SourceFiles="@(ModuleFolderFile)" DestinationFiles="@(ModuleFolderFile->'$(ModulePackageDir)%(Identity)')" />
+    <Copy SourceFiles="@(ModuleLicense)" DestinationFiles="@(ModuleLicense->'$(ModulePackageDir)licenses/%(PackageName)')" />
+    <WriteLinesToFile File="$(ModulePackageStage)manifest.json" Lines="@(ManifestLine)" Overwrite="true" />
+    <SattlemeReproducibleZip SourceDirectory="$(ModulePackageStage)" DestinationFile="$(ModuleArchive)" />
+    <Message Importance="high" Text="Sattleme.Bitcoin -> $(ModuleArchive)" />
+  </Target>
+
+</Project>

@@ -1,0 +1,68 @@
+/* The payment page of the sattle.me Bitcoin payment method: the shop's theme, and a few rules of its own. */
+.sattleme-pay .page-body {
+    max-width: 560px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.sattleme-pay-notice {
+    margin: 0 0 1rem;
+    font-weight: 600;
+}
+
+.sattleme-pay-amount,
+.sattleme-pay-time,
+.sattleme-pay-code,
+.sattleme-pay-copy,
+.sattleme-pay-new,
+.sattleme-pay-back {
+    margin: 0 0 1.25rem;
+}
+
+.sattleme-pay-label,
+.sattleme-pay-sats,
+.sattleme-pay-btc,
+.sattleme-pay-price {
+    display: block;
+}
+
+.sattleme-pay-sats {
+    font-size: 1.5rem;
+}
+
+.sattleme-pay-qr {
+    display: inline-block;
+    width: 100%;
+    max-width: 300px;
+}
+
+.sattleme-pay-qr svg {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.sattleme-pay-scan {
+    margin: 0.5rem 0;
+}
+
+.sattleme-pay-copy label {
+    display: block;
+    margin: 0 0 0.25rem;
+    font-weight: 600;
+}
+
+.sattleme-pay-copy textarea,
+.sattleme-pay-copy input {
+    font-family: monospace;
+    font-size: 0.75rem;
+    word-break: break-all;
+}
+
+.sattleme-pay-copy button {
+    margin-top: 0.375rem;
+}
+
+.sattleme-pay-hint {
+    font-size: 0.875rem;
+}

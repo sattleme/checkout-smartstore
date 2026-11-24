@@ -1,0 +1,13 @@
+{
+  "Author": "sattle.me",
+  "Group": "Payment",
+  "SystemName": "Sattleme.Bitcoin",
+  "FriendlyName": "Bitcoin (sattle.me)",
+  "Description": "Bitcoin payments, in Lightning or on-chain, straight to the merchant's sattle.me wallet: the customer pays on a page of the shop.",
+  "Version": "1.0.0",
+  "MinAppVersion": "6.4.0",
+  "Order": 1,
+  "ResourceRootKey": "Plugins.Sattleme.Bitcoin",
+  "ProjectUrl": "https://sattle.me",
+  "Tags": "Bitcoin, Lightning, sattle.me"
+}

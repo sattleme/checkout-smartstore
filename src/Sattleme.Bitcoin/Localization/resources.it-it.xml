@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The texts of the sattle.me payment module: a Smartstore resource file (it-it). -->
+<Language Name="Italiano" IsDefault="false" IsRightToLeft="false">
+  <LocaleResource Name="Plugins.FriendlyName.Payments.Sattleme" AppendRootKey="false">
+    <Value>Bitcoin</Value>
+  </LocaleResource>
+  <LocaleResource Name="Plugins.FriendlyName.Sattleme.Bitcoin" AppendRootKey="false">
+    <Value>Bitcoin (sattle.me)</Value>
+  </LocaleResource>
+  <LocaleResource Name="Plugins.Description.Sattleme.Bitcoin" AppendRootKey="false">
+    <Value>Pagamenti in bitcoin, con Lightning o on-chain, direttamente nel wallet sattle.me del commerciante: il cliente paga su una pagina del negozio.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Plugins.Sattleme.Bitcoin" AppendRootKey="false">
+    <Children>
+      <LocaleResource Name="AdditionalFee">
+        <Value>Commissione aggiuntiva</Value>
+      </LocaleResource>
+      <LocaleResource Name="AdditionalFee.Hint">
+        <Value>Una commissione aggiunta agli ordini pagati in Bitcoin.</Value>
+      </LocaleResource>
+      <LocaleResource Name="AdditionalFeePercentage">
+        <Value>Commissione aggiuntiva in percentuale</Value>
+      </LocaleResource>
+      <LocaleResource Name="AdditionalFeePercentage.Hint">
+        <Value>La commissione aggiuntiva è una percentuale del totale dell'ordine.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Admin.Address">
+        <Value>Indirizzo di deposito</Value>
+      </LocaleResource>
+      <LocaleResource Name="Admin.Amount">
+        <Value>Importo</Value>
+      </LocaleResource>
+      <LocaleResource Name="Admin.Confirmations">
+        <Value>Conferme</Value>
+      </LocaleResource>
+      <LocaleResource Name="Admin.Created">
+        <Value>Creata</Value>
+      </LocaleResource>
+      <LocaleResource Name="Admin.Error">
+        <Value>Ultimo errore</Value>
+      </LocaleResource>
+      <LocaleResource Name="Admin.Expires">
+        <Value>Scade</Value>
+      </LocaleResource>
+      <LocaleResource Name="Admin.LastCheck">
+        <Value>Ultima verifica</Value>
+      </LocaleResource>
+      <LocaleResource Name="Admin.NextCheck">
+        <Value>Prossima verifica</Value>
+      </LocaleResource>
+      <LocaleResource Name="Admin.NoInvoice">
+        <Value>Per questo ordine non è ancora stata emessa alcuna fattura Bitcoin.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Admin.Note">
+        <Value>Nota nell'app sattle.me</Value>
+      </LocaleResource>
+      <LocaleResource Name="Admin.PaymentHash">
+        <Value>prova l'hash di pagamento</Value>
+      </LocaleResource>
+      <LocaleResource Name="Admin.Preimage">
+        <Value>Prova di pagamento (preimage)</Value>
+      </LocaleResource>
+      <LocaleResource Name="Admin.Privacy">
+        <Value>Dati personali</Value>
+      </LocaleResource>
+      <LocaleResource Name="Admin.Rate">
+        <Value>Tasso di cambio</Value>
+      </LocaleResource>
+      <LocaleResource Name="Admin.RateValue">
+        <Value>1 BTC = {0} {1} (fonte: {2}, {3})</Value>
+      </LocaleResource>
+      <LocaleResource Name="Admin.Received">
+        <Value>Ricevuto</Value>
+      </LocaleResource>
+      <LocaleResource Name="Admin.Reference">
+        <Value>Riferimento</Value>
+      </LocaleResource>
+      <LocaleResource Name="Admin.Refunds">
+        <Value>I rimborsi non sono automatici: un pagamento Lightning può essere rimborsato solo su una fattura del cliente, uno on-chain su un suo indirizzo. Rimborsa il cliente dal tuo wallet, poi registralo in Smartstore (il rimborso offline dell'ordine).</Value>
+      </LocaleResource>
+      <LocaleResource Name="Admin.Shredded">
+        <Value>I dati personali del cliente sono stati rimossi: l'indirizzo e le transazioni non sono più conservati.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Admin.State">
+        <Value>Stato</Value>
+      </LocaleResource>
+      <LocaleResource Name="Admin.Tab">
+        <Value>Pagamento Bitcoin (sattle.me)</Value>
+      </LocaleResource>
+      <LocaleResource Name="Admin.Transactions">
+        <Value>Transazioni</Value>
+      </LocaleResource>
+      <LocaleResource Name="Admin.TransactionsAtAddress">
+        <Value>Lo stato di un pagamento insufficiente non ne elenca nessuna: sono quelle dell'indirizzo di deposito, sulla sua pagina:</Value>
+      </LocaleResource>
+      <LocaleResource Name="Admin.Warning.Confirming">
+        <Value>Un pagamento Bitcoin di questo ordine può ancora essere confermato. Se annulli l'ordine, un pagamento confermato comunque viene registrato nelle sue note, da rimborsare a mano.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Admin.Warning.Payable">
+        <Value>La fattura Bitcoin di questo ordine può ancora essere pagata fino a {0}. Se annulli l'ordine, un pagamento che arriva comunque viene registrato nelle sue note, da rimborsare a mano.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Admin.Warning.Underpaid">
+        <Value>{0} dei {1} sats della fattura Bitcoin {2} sono arrivati in tempo nel tuo wallet e l'ordine non è pagato: sistemalo con il cliente (rimborsalo o segna l'ordine come pagato) prima di annullarlo.</Value>
+      </LocaleResource>
+      <LocaleResource Name="AdminActivation">
+        <Value>Offri il metodo al checkout in Configurazione → Metodi di pagamento, dove indichi anche il suo nome e la sua descrizione, i negozi e le regole a cui è limitato.</Value>
+      </LocaleResource>
+      <LocaleResource Name="AdminInstruction">
+        <Value>I clienti pagano in bitcoin, con Lightning o on-chain, direttamente nel tuo wallet sattle.me, su una pagina del tuo negozio. Crea un'integrazione nell'app sattle.me, poi inserisci qui la sua chiave.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Currency.Unsupported">
+        <Value>I pagamenti in Bitcoin non sono offerti: la valuta principale del negozio non è una valuta che sattle.me converte.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Error.Checking">
+        <Value>Il tempo per pagare la fattura Bitcoin di questo ordine è scaduto e il suo pagamento è in verifica. Riprova tra qualche minuto.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Error.Confirming">
+        <Value>Un pagamento Bitcoin di questo ordine è in conferma.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Error.NotPayable">
+        <Value>Questo ordine non può essere pagato in Bitcoin: contatta il negozio.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Error.NotPending">
+        <Value>Questo ordine non è in attesa di un pagamento.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Error.Pending">
+        <Value>Questo ordine ha una fattura Bitcoin pagabile fino alle {0}. Pagala, oppure riprova dopo quell'ora.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Error.TryAgain">
+        <Value>Non è stato possibile creare la fattura Bitcoin in questo momento. Riprova tra poco.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Error.Unavailable">
+        <Value>I pagamenti in Bitcoin non sono disponibili al momento. Riprova più tardi, o contatta il negozio.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Error.Underpaid">
+        <Value>Al wallet del commerciante è arrivato in tempo meno dell'importo: il commerciante ti contatterà per sistemare la cosa.</Value>
+      </LocaleResource>
+      <LocaleResource Name="ErrorCode.apply">
+        <Value>Smartstore non ha potuto aggiornare l'ordine: la prossima verifica riprova.</Value>
+      </LocaleResource>
+      <LocaleResource Name="ErrorCode.busy">
+        <Value>Un'altra richiesta stava creando la fattura di questo ordine.</Value>
+      </LocaleResource>
+      <LocaleResource Name="ErrorCode.channel_not_found">
+        <Value>L'integrazione non è stata trovata sui suoi relay.</Value>
+      </LocaleResource>
+      <LocaleResource Name="ErrorCode.checkout_unavailable">
+        <Value>L'app del commerciante non fornisce una pagina di pagamento.</Value>
+      </LocaleResource>
+      <LocaleResource Name="ErrorCode.currency">
+        <Value>La valuta del negozio o l'importo dell'ordine non può essere pagato in Bitcoin.</Value>
+      </LocaleResource>
+      <LocaleResource Name="ErrorCode.error">
+        <Value>Un errore inatteso: vedi Sistema → Log.</Value>
+      </LocaleResource>
+      <LocaleResource Name="ErrorCode.invalid_invoice">
+        <Value>La fattura salvata è danneggiata.</Value>
+      </LocaleResource>
+      <LocaleResource Name="ErrorCode.invalid_key">
+        <Value>La chiave di integrazione non è valida.</Value>
+      </LocaleResource>
+      <LocaleResource Name="ErrorCode.invalid_option">
+        <Value>Le opzioni del modulo per il servizio sattle.me non sono valide.</Value>
+      </LocaleResource>
+      <LocaleResource Name="ErrorCode.invalid_order">
+        <Value>L'ordine non può essere pagato in Bitcoin (il suo importo è fuori dai limiti del commerciante).</Value>
+      </LocaleResource>
+      <LocaleResource Name="ErrorCode.mismatch">
+        <Value>La fattura creata non corrispondeva all'importo dell'ordine: non è stata mostrata.</Value>
+      </LocaleResource>
+      <LocaleResource Name="ErrorCode.network">
+        <Value>Non è stato possibile raggiungere il servizio sattle.me (i relay del commerciante, l'indirizzo Lightning, le fonti dei cambi o l'esploratore di blocchi: mempool.space o il nodo Bitcoin del commerciante).</Value>
+      </LocaleResource>
+      <LocaleResource Name="ErrorCode.no_key">
+        <Value>Nessuna chiave di integrazione è impostata per il negozio, o quella salvata non può essere letta.</Value>
+      </LocaleResource>
+      <LocaleResource Name="ErrorCode.onchain_unavailable">
+        <Value>Nessun indirizzo di deposito era disponibile per questo importo: riprova più tardi (aprire l'app sattle.me ne aggiunge).</Value>
+      </LocaleResource>
+      <LocaleResource Name="ErrorCode.rate">
+        <Value>Non è stato possibile leggere il tasso di cambio.</Value>
+      </LocaleResource>
+      <LocaleResource Name="ErrorCode.revoked">
+        <Value>L'integrazione è stata rimossa nell'app sattle.me.</Value>
+      </LocaleResource>
+      <LocaleResource Name="ErrorCode.timeout">
+        <Value>Il servizio sattle.me ha impiegato troppo tempo a rispondere.</Value>
+      </LocaleResource>
+      <LocaleResource Name="ErrorCode.unsupported_currency">
+        <Value>La valuta del negozio non è una valuta che sattle.me converte.</Value>
+      </LocaleResource>
+      <LocaleResource Name="IntegrationKey">
+        <Value>Chiave di integrazione</Value>
+      </LocaleResource>
+      <LocaleResource Name="IntegrationKey.Hint">
+        <Value>La chiave segreta dell'integrazione creata nell'app sattle.me (sattleme_ck_…). Viene verificata al salvataggio, conservata cifrata e mai più mostrata: inseriscine una nuova per sostituirla.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Key.Invalid">
+        <Value>Questa non è la chiave segreta di un'integrazione sattle.me: copia la chiave intera dall'app, sattleme_ck_ compreso.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Key.Newer">
+        <Value>Questa integrazione richiede una versione più recente del modulo sattle.me: aggiorna il modulo.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Key.None">
+        <Value>Nessuna chiave salvata.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Key.NotFound">
+        <Value>Questa integrazione non è stata trovata: apri l'app sattle.me, verifica la chiave e riprova.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Key.Revoked">
+        <Value>Questa integrazione è stata rimossa nell'app sattle.me: crea una nuova integrazione e inserisci la sua chiave.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Key.Saved">
+        <Value>Una chiave è salvata.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Key.SavedForAll">
+        <Value>Questo negozio usa la chiave di tutti i negozi.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Key.SavedForStore">
+        <Value>Questo negozio ha una chiave propria.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Key.Unreadable">
+        <Value>È salvata una chiave che non può essere letta (la chiave di cifratura del negozio è cambiata): inserisci di nuovo la chiave.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Key.Unverified">
+        <Value>Non è stato possibile verificare questa chiave: il server del negozio non ha raggiunto il servizio sattle.me. Controlla le sue connessioni in uscita e riprova.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Key.Verified">
+        <Value>Salvato. La chiave di integrazione di {0} è verificata.</Value>
+      </LocaleResource>
+      <LocaleResource Name="MinutesToPay">
+        <Value>Tempo per pagare (minuti)</Value>
+      </LocaleResource>
+      <LocaleResource Name="MinutesToPay.Hint">
+        <Value>Quanto tempo ha il cliente per pagare una fattura: da 1 a 60 minuti.</Value>
+      </LocaleResource>
+      <LocaleResource Name="MinutesToPay.Range">
+        <Value>Il tempo per pagare va da 1 a 60 minuti.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Note.Abandoned">
+        <Value>Fattura Bitcoin {0}: nessuno stato finale dopo {1} giorni, le sue verifiche sono interrotte. Sistema l'ordine a mano (le sue transazioni sono nella scheda Pagamento Bitcoin dell'ordine).</Value>
+      </LocaleResource>
+      <LocaleResource Name="Note.Created">
+        <Value>Fattura Bitcoin {0} creata: {1} sats.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Note.Expired">
+        <Value>La fattura Bitcoin {0} è scaduta senza pagamento.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Note.Failed">
+        <Value>Non è stato possibile creare una fattura Bitcoin ({0}): {1}</Value>
+      </LocaleResource>
+      <LocaleResource Name="Note.PaidCancelled">
+        <Value>La fattura Bitcoin {0} è stata pagata ({1} sats arrivati) dopo l'annullamento dell'ordine: i bitcoin sono arrivati nel tuo wallet. Smartstore non può togliere un ordine dallo stato Annullato: l'ordine resta annullato. Rimborsa il cliente o sistema l'ordine con lui a mano.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Note.PaidLightning">
+        <Value>Fattura Bitcoin {0} pagata con Lightning: la sua fattura Lightning di {1} sats.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Note.PaidMixed">
+        <Value>Fattura Bitcoin {0} pagata on-chain e con Lightning (il resto di un pagamento insufficiente): sono arrivati in tempo {1} sats in tutto per i suoi {2} sats (transazioni on-chain: {3}; fatture Lightning del resto pagate: {4}).</Value>
+      </LocaleResource>
+      <LocaleResource Name="Note.PaidNotMarked">
+        <Value>La fattura Bitcoin {0} è stata pagata ({1} sats arrivati) e Smartstore non può segnare questo ordine come pagato nel suo stato attuale: sistemalo a mano.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Note.PaidOnchain">
+        <Value>Fattura Bitcoin {0} pagata on-chain: sono arrivati in tempo {1} sats per i suoi {2} sats (transazioni on-chain: {3}).</Value>
+      </LocaleResource>
+      <LocaleResource Name="Note.PaidOtherTotal">
+        <Value>La fattura Bitcoin {0} è stata pagata: {1} sats arrivati, per {2}. L'ordine deve ora {3} (il suo totale o il suo pagamento è cambiato nel frattempo): non è stato segnato come pagato, il suo pagamento resta in sospeso. Sistema la differenza con il cliente, poi segna l'ordine come pagato a mano.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Note.PaidOver">
+        <Value>Fattura Bitcoin {0}: sono arrivati {1} sats in più del suo importo (un pagamento in eccesso, nel tuo wallet).</Value>
+      </LocaleResource>
+      <LocaleResource Name="Note.PaidShort">
+        <Value>Fattura Bitcoin {0}: {1} sats in meno del suo importo, accettati come pagamento completo dalla tua tolleranza o dalla tua accettazione nell'app sattle.me.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Note.PaidTwice">
+        <Value>La fattura Bitcoin {0} è stata pagata ({1} sats arrivati) e l'ordine era già pagato in altro modo: rimborsa al cliente uno dei pagamenti.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Note.Unconfirmed">
+        <Value>Fattura Bitcoin {0}: sono arrivati in tempo {1} sats per i suoi {2} sats; il pagamento è in conferma ({3} conferme su 3).</Value>
+      </LocaleResource>
+      <LocaleResource Name="Note.Underpaid">
+        <Value>La fattura Bitcoin {0} è scaduta con un pagamento insufficiente: {1} dei suoi {2} sats sono arrivati in tempo nel tuo wallet. L'ordine non è pagato: sistemalo con il cliente.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Order.Pay">
+        <Value>Apri la pagina di pagamento</Value>
+      </LocaleResource>
+      <LocaleResource Name="Order.Phase.arrived">
+        <Value>il tuo pagamento è arrivato.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Order.Phase.cancelled">
+        <Value>l'ordine è stato annullato.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Order.Phase.ended">
+        <Value>il tempo per pagare è scaduto, il pagamento è in verifica.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Order.Phase.expired">
+        <Value>la fattura non è stata pagata in tempo.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Order.Phase.expiredUnderpaid">
+        <Value>solo {0} di {1} sats sono arrivati in tempo: il pagamento non è completo. Il commerciante ti contatterà per sistemare la cosa.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Order.Phase.none">
+        <Value>nessuna fattura da pagare.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Order.Phase.open">
+        <Value>in attesa del tuo pagamento, fino alle {0}.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Order.Phase.paid">
+        <Value>pagato.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Order.Phase.review">
+        <Value>il tuo pagamento è arrivato, il commerciante verifica l'ordine.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Order.Phase.unconfirmed">
+        <Value>il tuo pagamento è in conferma.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Order.Phase.underpaid">
+        <Value>è arrivato meno dell'importo: il resto è da pagare, fino alle {0}.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Order.Title">
+        <Value>Pagamento Bitcoin:</Value>
+      </LocaleResource>
+      <LocaleResource Name="Pay.Address">
+        <Value>Indirizzo Bitcoin</Value>
+      </LocaleResource>
+      <LocaleResource Name="Pay.Amount">
+        <Value>Importo</Value>
+      </LocaleResource>
+      <LocaleResource Name="Pay.Arrived">
+        <Value>Il tuo pagamento è arrivato: il tuo ordine viene segnato come pagato.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Pay.BackToOrder">
+        <Value>Torna all'ordine</Value>
+      </LocaleResource>
+      <LocaleResource Name="Pay.Cancelled">
+        <Value>Questo ordine è stato annullato.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Pay.CanClose">
+        <Value>Puoi chiudere questa pagina: il tuo ordine sarà segnato come pagato una volta confermato il pagamento.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Pay.Check">
+        <Value>Verifica il pagamento</Value>
+      </LocaleResource>
+      <LocaleResource Name="Pay.Confirmations">
+        <Value>Conferme: {0} su 3.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Pay.Copied">
+        <Value>Copiato</Value>
+      </LocaleResource>
+      <LocaleResource Name="Pay.CopyAddress">
+        <Value>Copia l'indirizzo</Value>
+      </LocaleResource>
+      <LocaleResource Name="Pay.CopyLightning">
+        <Value>Copia la fattura</Value>
+      </LocaleResource>
+      <LocaleResource Name="Pay.Ended">
+        <Value>Il tempo per pagare questa fattura è scaduto.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Pay.EndedChecking">
+        <Value>Se l'hai pagata, il tuo pagamento è in verifica: questa pagina lo indicherà a breve.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Pay.Expired">
+        <Value>Questa fattura non è stata pagata in tempo.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Pay.ExpiredUnderpaid">
+        <Value>Solo {0} di {1} sats sono arrivati in tempo: il pagamento non è completo. Il commerciante ti contatterà per sistemare la cosa.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Pay.GetInvoice">
+        <Value>Ottieni una fattura</Value>
+      </LocaleResource>
+      <LocaleResource Name="Pay.LightningInvoice">
+        <Value>Fattura Lightning</Value>
+      </LocaleResource>
+      <LocaleResource Name="Pay.NewInvoice">
+        <Value>Ottieni una nuova fattura</Value>
+      </LocaleResource>
+      <LocaleResource Name="Pay.None">
+        <Value>Questo ordine non ha al momento una fattura Bitcoin da pagare.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Pay.OnchainNote">
+        <Value>Un pagamento on-chain viene confermato in circa 30 minuti, un pagamento Lightning subito.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Pay.OpenWallet">
+        <Value>Apri nel wallet</Value>
+      </LocaleResource>
+      <LocaleResource Name="Pay.OrderTotal">
+        <Value>Totale dell'ordine: {0}</Value>
+      </LocaleResource>
+      <LocaleResource Name="Pay.Paid">
+        <Value>Grazie: il tuo ordine è pagato.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Pay.QrLabel">
+        <Value>Codice QR del pagamento Bitcoin</Value>
+      </LocaleResource>
+      <LocaleResource Name="Pay.RemainingAmount">
+        <Value>Resta da pagare</Value>
+      </LocaleResource>
+      <LocaleResource Name="Pay.RestPreparing">
+        <Value>È arrivato meno dell'importo: la fattura del resto è in preparazione. Questa pagina si aggiorna da sola.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Pay.Review">
+        <Value>Il tuo pagamento è arrivato. Il commerciante verifica il tuo ordine e lo conferma con te.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Pay.Scan">
+        <Value>Scansiona il codice QR con il tuo wallet Bitcoin, o apri il wallet su questo dispositivo.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Pay.SendExactly">
+        <Value>On-chain: invia esattamente {0} BTC a questo indirizzo, in un'unica transazione.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Pay.TimeLeft">
+        <Value>Tempo rimasto</Value>
+      </LocaleResource>
+      <LocaleResource Name="Pay.Title">
+        <Value>Paga l'ordine {0}</Value>
+      </LocaleResource>
+      <LocaleResource Name="Pay.Unconfirmed">
+        <Value>Il tuo pagamento di {0} sats è arrivato ed è in conferma sulla rete Bitcoin.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Pay.Underpaid">
+        <Value>Sono arrivati {0} di {1} sats: paga il resto qui sotto.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Pay.Until">
+        <Value>fino alle {0}</Value>
+      </LocaleResource>
+      <LocaleResource Name="Pay.Updates">
+        <Value>Questa pagina si aggiorna da sola dopo il pagamento.</Value>
+      </LocaleResource>
+      <LocaleResource Name="PaymentInfo.Next">
+        <Value>Dopo aver confermato l'ordine, lo paghi nella pagina successiva: scansiona il codice QR con il tuo wallet Bitcoin. Hai {0} minuti.</Value>
+      </LocaleResource>
+      <LocaleResource Name="PaymentInfo.NextOneMinute">
+        <Value>Dopo aver confermato l'ordine, lo paghi nella pagina successiva: scansiona il codice QR con il tuo wallet Bitcoin. Hai {0} minuto.</Value>
+      </LocaleResource>
+      <LocaleResource Name="PaymentMethodDescription">
+        <Value>Paga in bitcoin, con Lightning o on-chain.</Value>
+      </LocaleResource>
+      <LocaleResource Name="RemoveKey">
+        <Value>Rimuovi la chiave</Value>
+      </LocaleResource>
+      <LocaleResource Name="RemoveKey.Hint">
+        <Value>Rimuove la chiave salvata per i negozi mostrati. In un negozio: la sua chiave viene rimossa e torna a valere la chiave di tutti i negozi.</Value>
+      </LocaleResource>
+      <LocaleResource Name="State.abandoned">
+        <Value>Verifiche interrotte: nessuno stato finale dopo 90 giorni. Sistema l'ordine a mano.</Value>
+      </LocaleResource>
+      <LocaleResource Name="State.expired">
+        <Value>Scaduta senza pagamento</Value>
+      </LocaleResource>
+      <LocaleResource Name="State.expiredUnderpaid">
+        <Value>Scaduta con un pagamento insufficiente</Value>
+      </LocaleResource>
+      <LocaleResource Name="State.none">
+        <Value>Nessuna fattura (il tentativo non è riuscito)</Value>
+      </LocaleResource>
+      <LocaleResource Name="State.open">
+        <Value>In attesa del pagamento</Value>
+      </LocaleResource>
+      <LocaleResource Name="State.paid">
+        <Value>Pagata</Value>
+      </LocaleResource>
+      <LocaleResource Name="State.unchecked">
+        <Value>In attesa della prima verifica</Value>
+      </LocaleResource>
+      <LocaleResource Name="State.uncheckedFailed">
+        <Value>Nessuno stato letto finora: la sua ultima verifica non è riuscita, viene verificata di nuovo</Value>
+      </LocaleResource>
+      <LocaleResource Name="State.unconfirmed">
+        <Value>In conferma</Value>
+      </LocaleResource>
+      <LocaleResource Name="Uninstall.Pending">
+        <Value>Il modulo non può essere disinstallato finché {0} fatture Bitcoin possono ancora essere pagate o sono in conferma: attendi che siano concluse.</Value>
+      </LocaleResource>
+      <LocaleResource Name="Uninstall.PendingOne">
+        <Value>Il modulo non può essere disinstallato finché {0} fattura Bitcoin può ancora essere pagata o è in conferma: attendi che sia conclusa.</Value>
+      </LocaleResource>
+    </Children>
+  </LocaleResource>
+</Language>

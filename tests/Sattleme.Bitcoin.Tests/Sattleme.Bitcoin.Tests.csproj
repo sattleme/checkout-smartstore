@@ -1,0 +1,73 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    The module's tests (NUnit and Moq, as Smartstore's own tests), against Smartstore 6.4.0's
+    assemblies ($(SmartstoreDir), scripts/smartstore.sh). The SDK is faked at the module's seam
+    (ISattlemeGateway); the database is Smartstore's own SmartDbContext on SQLite (Smartstore's
+    SQLite provider, as a shop installed with SQLite runs it), with Smartstore's tables and the
+    module's; the module's archive, built with the module, is checked as it ships.
+  -->
+  <PropertyGroup>
+    <AssemblyName>Sattleme.Bitcoin.Tests</AssemblyName>
+    <RootNamespace>Sattleme.Bitcoin.Tests</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <!--
+      Test names say what is tested, in words (CA1707: Completes_the_order_once), and need no XML
+      comment of their own (CS1591); NUnit's fixtures dispose what each test made in their TearDown
+      (CA1001); their arrays of expected values are written where they are compared (CA1861); the
+      SDK's logger is called as the SDK calls it (CA1848).
+    -->
+    <NoWarn>$(NoWarn);CA1707;CA1001;CS1591;CA1861;CA1848</NoWarn>
+    <!-- Smartstore's assemblies are copied as hard links where the file system allows it. -->
+    <CreateHardLinksForCopyLocalIfPossible>true</CreateHardLinksForCopyLocalIfPossible>
+    <CreateHardLinksForCopyFilesToOutputDirectoryIfPossible>true</CreateHardLinksForCopyFilesToOutputDirectoryIfPossible>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="Moq" />
+    <PackageReference Include="Microsoft.Extensions.DependencyModel" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/Sattleme.Bitcoin/Sattleme.Bitcoin.csproj" />
+    <ProjectReference Include="../../src/Embedded/Checkout/Sattleme.Bitcoin.Sdk.csproj" />
+    <ProjectReference Include="../../src/Embedded/Secp256k1/Sattleme.Bitcoin.Secp256k1.csproj" />
+    <ProjectReference Include="../../src/Embedded/QrCode/Sattleme.Bitcoin.QrCode.csproj" />
+    <ProjectReference Include="../../tools/Sattleme.Smartstore.Pins/Sattleme.Smartstore.Pins.csproj" />
+  </ItemGroup>
+
+  <!-- The application's assemblies, as a shop runs them: every one of them, with SQLite's native library. -->
+  <ItemGroup>
+    <SmartstoreAssembly Include="$(SmartstoreDir)*.dll" Exclude="$(SmartstoreDir)Microsoft.Extensions.DependencyModel.dll" />
+    <Reference Include="@(SmartstoreAssembly->'%(Filename)')" HintPath="$(SmartstoreDir)%(Identity).dll" Private="true" />
+    <None Include="$(SmartstoreDir)libe_sqlite3.so" Link="libe_sqlite3.so" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>RepositoryRoot</_Parameter1>
+      <_Parameter2>$(RepositoryRoot)</_Parameter2>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>ModulePackage</_Parameter1>
+      <_Parameter2>$(RepositoryRoot)artifacts/$(Configuration)/</_Parameter2>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>Version</_Parameter1>
+      <_Parameter2>$(Version)</_Parameter2>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>SmartstoreDir</_Parameter1>
+      <_Parameter2>$(SmartstoreDir)</_Parameter2>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+</Project>

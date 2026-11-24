@@ -1,0 +1,18 @@
+# Build output
+bin/
+obj/
+artifacts/
+TestResults/
+
+# Smartstore's release assemblies, fetched at their pinned checksum by scripts/smartstore.sh
+.smartstore/
+
+# The end-to-end test's bytecode and outputs
+__pycache__/
+e2e/out/
+
+# Editors
+.vs/
+.idea/
+*.user
+*.suo

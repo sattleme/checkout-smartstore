@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    The pinned copies the module is built from (README.md, "Development"): the SDK in sdk/,
+    NBitcoin.Secp256k1 and the QR code generator in vendor/. Checks them file by file against their
+    PIN.json, or takes a new version from a clone of its repository at a commit.
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Sattleme.Pins</RootNamespace>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+</Project>

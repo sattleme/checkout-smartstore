@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    The SDK, Sattleme.Checkout 1.0.0 (sdk/, its PIN.json), compiled as its own project compiles it
+    (sdk/Directory.Build.props: C# 13, nullable, strict, warnings as errors), under the module's
+    names: Embedded.targets. Its dependencies: NBitcoin.Secp256k1, embedded the same way, and
+    Microsoft.Extensions.Logging.Abstractions, which Smartstore's host brings (ASP.NET Core's
+    shared framework).
+  -->
+
+  <PropertyGroup>
+    <AssemblyName>Sattleme.Bitcoin.Sdk</AssemblyName>
+    <LangVersion>13.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <Features>strict</Features>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedSource Include="$(RepositoryRoot)sdk/src/Sattleme.Checkout/**/*.cs"
+                    Root="$(RepositoryRoot)sdk/" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="../Secp256k1/Sattleme.Bitcoin.Secp256k1.csproj" />
+  </ItemGroup>
+
+  <!-- After the sources: Embedded.targets lists the prefixed copies it compiles. -->
+  <Import Project="../Embedded.targets" />
+
+</Project>

@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "dependencies": {
+    "net10.0": {
+      "sattleme.bitcoin": {
+        "type": "Project",
+        "dependencies": {
+          "Sattleme.Bitcoin.QrCode": "[1.0.0, )",
+          "Sattleme.Bitcoin.Sdk": "[1.0.0, )",
+          "Sattleme.Bitcoin.Secp256k1": "[1.0.0, )"
+        }
+      },
+      "sattleme.bitcoin.qrcode": {
+        "type": "Project"
+      },
+      "sattleme.bitcoin.sdk": {
+        "type": "Project",
+        "dependencies": {
+          "Sattleme.Bitcoin.Secp256k1": "[1.0.0, )"
+        }
+      },
+      "sattleme.bitcoin.secp256k1": {
+        "type": "Project"
+      }
+    }
+  }
+}

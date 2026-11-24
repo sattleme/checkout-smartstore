@@ -1,0 +1,11 @@
+{
+  "Author": "sattle.me",
+  "Group": "Developer",
+  "SystemName": "Sattleme.E2e",
+  "FriendlyName": "sattle.me end-to-end test (never in a shop)",
+  "Description": "Replaces the sattle.me module's SDK with a fake, for its end-to-end test.",
+  "Version": "1.0.0",
+  "MinAppVersion": "6.4.0",
+  "Order": 100,
+  "DependsOn": [ "Sattleme.Bitcoin" ]
+}

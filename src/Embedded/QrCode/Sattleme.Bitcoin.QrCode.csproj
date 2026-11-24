@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Net.Codecrete.QrCodeGenerator 3.2.1, the QR codes of the payment page
+    (vendor/QrCodeGenerator, MIT, its LICENSE there), compiled as its own project compiles it
+    (QrCodeGenerator.csproj: its sources, C# 7.3), unsigned and under the module's names:
+    Embedded.targets.
+  -->
+
+  <PropertyGroup>
+    <AssemblyName>Sattleme.Bitcoin.QrCode</AssemblyName>
+    <LangVersion>7.3</LangVersion>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedSource Include="$(RepositoryRoot)vendor/QrCodeGenerator/QrCodeGenerator/**/*.cs"
+                    Root="$(RepositoryRoot)vendor/QrCodeGenerator/" />
+  </ItemGroup>
+
+  <!-- After the sources: Embedded.targets lists the prefixed copies it compiles. -->
+  <Import Project="../Embedded.targets" />
+
+</Project>
